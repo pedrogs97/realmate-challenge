@@ -12,6 +12,9 @@ class Conversation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        db_table = "conversations"
+
 
 class Message(models.Model):
     TYPE_CHOICES = [
@@ -25,3 +28,6 @@ class Message(models.Model):
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
     content = models.TextField()
     timestamp = models.DateTimeField()
+
+    class Meta:
+        db_table = "messages"

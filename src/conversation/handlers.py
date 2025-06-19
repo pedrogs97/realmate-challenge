@@ -10,7 +10,15 @@ from .tasks import (
 
 
 @transaction.atomic
-def handle_new_conversation(payload):
+def handle_new_conversation(payload: dict):
+    """
+    Handle the creation of a new conversation.
+
+    Args:
+        payload (dict): The payload containing conversation data.
+    Raises:
+        ValueError: If the conversation already exists.
+    """
     data = payload["data"]
     if Conversation.objects.filter(id=data["id"]).exists():
         raise ValueError("Conversation already exists")
@@ -19,7 +27,17 @@ def handle_new_conversation(payload):
 
 
 @transaction.atomic
-def handle_new_message(payload, from_buffer=False):
+def handle_new_message(payload: dict, from_buffer=False):
+    """
+    Handle the creation of a new message in an existing conversation.
+
+    Args:
+        payload (dict): The payload containing message data.
+        from_buffer (bool): Indicates if the message is being processed from a buffer.
+    Raises:
+        ValueError: If the conversation does not exist or is closed.
+        IntegrityError: If the message ID already exists.
+    """
     data = payload["data"]
     conv_id = data["conversation_id"]
     ts = parse_datetime(payload["timestamp"])
@@ -48,7 +66,15 @@ def handle_new_message(payload, from_buffer=False):
 
 
 @transaction.atomic
-def handle_close_conversation(payload):
+def handle_close_conversation(payload: dict):
+    """
+    Handle the closure of an existing conversation.
+
+    Args:
+        payload (dict): The payload containing conversation data.
+    Raises:
+        ValueError: If the conversation does not exist or is already closed.
+    """
     data = payload["data"]
     try:
         conv = Conversation.objects.get(id=data["id"])
